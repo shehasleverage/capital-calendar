@@ -1,0 +1,424 @@
+<title>Capital Calendar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=Schibsted+Grotesk:wght@400..700&display=swap">
+<style>
+/* Layout: one editorial column; the four decades sit side by side on wide screens and stack on phones. */
+:root {
+  --bg: #ffffff;
+  --ground: #f3eff8;
+  --paper: #fcfafe;
+  --ink: #2a2133;
+  --accent: #5b3a8c;
+  --on-accent: #ffffff;
+  --soft: #b9a3d9;
+  --muted: #7e5f89;
+  --line: rgba(42, 33, 51, 0.12);
+  --line-strong: rgba(42, 33, 51, 0.2);
+  --ring: rgba(91, 58, 140, 0.18);
+  --shadow: 0 24px 48px -36px rgba(42, 33, 51, 0.45);
+  --display: 'Spectral', Georgia, serif;
+  --body: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1621; --ground: #251e2d; --paper: #2a2233; --ink: #f3eff8; --accent: #c9b5e6;
+    --on-accent: #2a2133; --soft: #6e5596; --muted: #c4b3d4; --line: rgba(243, 239, 248, 0.14);
+    --line-strong: rgba(243, 239, 248, 0.24); --ring: rgba(201, 181, 230, 0.28); --shadow: 0 24px 48px -36px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1621; --ground: #251e2d; --paper: #2a2233; --ink: #f3eff8; --accent: #c9b5e6;
+  --on-accent: #2a2133; --soft: #6e5596; --muted: #c4b3d4; --line: rgba(243, 239, 248, 0.14);
+  --line-strong: rgba(243, 239, 248, 0.24); --ring: rgba(201, 181, 230, 0.28); --shadow: 0 24px 48px -36px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) { .wrap { padding-left: max(48px, env(safe-area-inset-left, 0px)); padding-right: max(48px, env(safe-area-inset-right, 0px)); } }
+
+/* Hero */
+.hero { background: var(--ground); }
+.hero .wrap { padding-block: 56px 48px; display: grid; gap: 20px; }
+@media (min-width: 720px) { .hero .wrap { padding-block: 80px 64px; } }
+.rule { width: 56px; height: 2px; background: var(--accent); }
+.label { font-weight: 600; font-size: 15px; color: var(--accent); margin: 0; }
+h1 {
+  font-family: var(--display); font-weight: 600; margin: 0;
+  font-size: clamp(2.6rem, 7vw, 4.4rem); line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance;
+}
+h1 em { color: var(--accent); }
+.lede { font-size: clamp(17px, 2vw, 20px); line-height: 1.62; color: var(--muted); margin: 0; max-width: 62ch; }
+.how { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 15px; }
+.how li { display: flex; gap: 10px; align-items: baseline; }
+.how b { font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 600; }
+
+/* Progress */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.bar .wrap { padding-block: 12px; display: flex; align-items: center; gap: 16px; }
+.meter { flex: 1; height: 6px; background: var(--ground); border-radius: 99px; overflow: hidden; }
+.meter span { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width 0.3s ease; }
+.count { font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Decades */
+main .wrap { padding-block: 40px 24px; display: grid; gap: 40px; }
+.decades { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .decades { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1120px) { .decades { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.decade {
+  min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+  padding: 22px 20px 20px; display: grid; gap: 18px; align-content: start;
+}
+.decade.anchor { border-color: var(--soft); box-shadow: var(--shadow); }
+.decade h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 34px; line-height: 1; letter-spacing: -0.03em; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.decade h2 small { font-family: var(--body); font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--muted); }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 14px; font-weight: 600; }
+.field .hint { font-size: 13px; color: var(--muted); margin: -2px 0 2px; }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: inherit; font-size: 16px; line-height: 1.45;
+  color: var(--ink); background: var(--bg); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea::placeholder { color: var(--muted); opacity: 0.75; font-style: italic; }
+textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line-strong); border-radius: 99px; padding: 7px 12px; min-height: 34px; cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.chip:focus-visible, .btn:focus-visible, .link-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* The move */
+.move { background: var(--ground); border-radius: 16px; padding: 28px 22px; display: grid; gap: 14px; }
+@media (min-width: 720px) { .move { padding: 40px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px; align-items: start; } }
+.move h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
+.move h2 em { color: var(--accent); }
+.move p { margin: 8px 0 0; color: var(--muted); }
+.move textarea { min-height: 96px; font-size: 18px; }
+
+/* Readout */
+.readout { display: grid; gap: 20px; }
+.readout-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px; }
+.readout h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn {
+  font: inherit; font-size: 16px; font-weight: 600; border-radius: 10px; padding: 11px 20px; min-height: 44px; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent);
+}
+.btn.quiet { background: transparent; color: var(--accent); }
+.link-btn { font: inherit; font-size: 15px; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 8px 2px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 44px; }
+.status { font-size: 14px; color: var(--muted); min-height: 1.4em; }
+.gaps { border-left: 4px solid var(--accent); background: var(--paper); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; }
+.gaps h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.gaps ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.gaps p { margin: 0; color: var(--muted); }
+.summary {
+  margin: 0; white-space: pre-wrap; font: inherit; font-size: 15px; line-height: 1.6; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; overflow-x: auto; max-height: 420px; overflow-y: auto;
+}
+.confirm { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 15px; background: var(--ground); border-radius: 10px; padding: 10px 14px; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); margin-top: 40px; }
+footer .wrap { padding-block: 32px 48px; display: grid; gap: 14px; font-size: 14px; color: var(--muted); }
+footer .next { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+footer a { color: var(--accent); font-weight: 600; text-underline-offset: 3px; }
+footer .fine { font-size: 13px; line-height: 1.62; max-width: 80ch; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="rule" aria-hidden="true"></div>
+    <p class="label">A She Has Leverage exercise</p>
+    <h1>Your Capital <em>Calendar.</em></h1>
+    <p class="lede">Your life in decades, and what each one is for. Borrowed from Bill Perkins' time buckets in <i>Die with Zero</i>, with one row added: which door, or what access, gets you there.</p>
+    <ul class="how">
+      <li><b>1</b> Start with the decade you're in.</li>
+      <li><b>2</b> A word or two per box.</li>
+      <li><b>3</b> Blank boxes are allowed.</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar" role="status" aria-live="polite">
+  <div class="wrap">
+    <div class="meter" aria-hidden="true"><span id="meter"></span></div>
+    <span class="count" id="count">0 of 13 filled</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section class="decades" id="decades" aria-label="Your decades"></section>
+
+    <section class="move" aria-labelledby="move-title">
+      <div>
+        <h2 id="move-title">One ownership move, <em>this year.</em></h2>
+        <p>Something you could start before the semester ends. "Run the Accreditation Tracker" counts.</p>
+      </div>
+      <div class="field">
+        <label for="move">My move</label>
+        <textarea id="move" placeholder="e.g. Go to one pitch night a month and talk to one investor each time"></textarea>
+      </div>
+    </section>
+
+    <section class="readout" aria-labelledby="readout-title">
+      <div class="readout-head">
+        <h2 id="readout-title">Where the gaps are</h2>
+        <div class="actions">
+          <button class="btn" type="button" id="copy">Copy my calendar</button>
+          <button class="link-btn" type="button" id="reset">Start over</button>
+        </div>
+      </div>
+      <div class="confirm" id="confirm" hidden>
+        <span>Clear every box on this page?</span>
+        <button class="btn" type="button" id="confirm-yes">Clear it</button>
+        <button class="btn quiet" type="button" id="confirm-no">Keep it</button>
+      </div>
+      <p class="status" id="status"></p>
+      <div class="gaps" id="gaps"></div>
+      <pre class="summary" id="summary" tabindex="0" aria-label="Your calendar as text"></pre>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="next">
+      <a href="https://shehasleverage.com/free-tools/accreditation-tracker" target="_blank" rel="noopener">Accreditation Tracker</a>
+      <a href="https://shehasleverage.com/learn" target="_blank" rel="noopener">Free tools and articles</a>
+      <a href="https://shehasleverage.com" target="_blank" rel="noopener">shehasleverage.com</a>
+      <a href="https://www.linkedin.com/company/she-has-leverage" target="_blank" rel="noopener">Follow She Has Leverage on LinkedIn</a>
+    </div>
+    <p class="fine">Your answers stay in this browser and aren't sent anywhere. Time buckets are Bill Perkins' idea, from <i>Die with Zero</i>.</p>
+    <p class="fine">For educational and informational purposes only. She Has Leverage does not provide investment advice or recommend securities or investment strategies.<br>© 2026 She Has Leverage LLC. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var DECADES = [
+    { id: 'd20', name: '20s', note: 'now', ex: ['Live abroad for a semester', 'Equity in my first startup job', 'A license, or the right rooms'] },
+    { id: 'd30', name: '30s', note: 'your line for 35', ex: ['Take a year to build my own company', 'A first LP check in a fund I believe in', 'Income door, plus an LP network'] },
+    { id: 'd40', name: '40s', note: '', ex: ['Summers with my family, no laptop', 'Stakes in three funds', 'Net worth door'] },
+    { id: 'd50', name: '50s and after', note: '', ex: ['Board seats at companies I care about', 'My own fund', 'Track record and reputation'] }
+  ];
+  var ROWS = [
+    { key: 'exp', label: 'What I want to experience' },
+    { key: 'own', label: 'What I want to own' },
+    { key: 'how', label: 'Which door, or what access, gets me there' }
+  ];
+  var DOORS = ['Income', 'Net worth', 'License', 'Access', 'A skill'];
+  var KEY = 'shl-capital-calendar-v1';
+
+  var state = load();
+
+  function blank() {
+    var s = { move: '', d: {} };
+    DECADES.forEach(function (d) { s.d[d.id] = { exp: '', own: '', how: '', doors: [] }; });
+    return s;
+  }
+  function load() {
+    var s = blank();
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        if (saved && saved.d) {
+          s.move = typeof saved.move === 'string' ? saved.move : '';
+          DECADES.forEach(function (d) {
+            var v = saved.d[d.id] || {};
+            s.d[d.id] = { exp: v.exp || '', own: v.own || '', how: v.how || '', doors: Array.isArray(v.doors) ? v.doors.filter(function (x) { return DOORS.indexOf(x) > -1; }) : [] };
+          });
+        }
+      }
+    } catch (e) {}
+    return s;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var host = document.getElementById('decades');
+  DECADES.forEach(function (d) {
+    var card = document.createElement('article');
+    card.className = 'decade' + (d.id === 'd30' ? ' anchor' : '');
+    card.setAttribute('aria-labelledby', d.id + '-h');
+    var h = document.createElement('h2');
+    h.id = d.id + '-h';
+    h.textContent = d.name;
+    if (d.note) { var sm = document.createElement('small'); sm.textContent = d.note; h.appendChild(sm); }
+    card.appendChild(h);
+    ROWS.forEach(function (r, i) {
+      var f = document.createElement('div');
+      f.className = 'field';
+      var id = d.id + '-' + r.key;
+      var lab = document.createElement('label');
+      lab.setAttribute('for', id);
+      lab.textContent = r.label;
+      f.appendChild(lab);
+      if (r.key === 'how') {
+        var chips = document.createElement('div');
+        chips.className = 'chips';
+        chips.setAttribute('role', 'group');
+        chips.setAttribute('aria-label', 'Doors for your ' + d.name);
+        DOORS.forEach(function (door) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'chip';
+          b.textContent = door;
+          b.id = id + '-' + door.toLowerCase().replace(/\s+/g, '-');
+          b.setAttribute('aria-pressed', state.d[d.id].doors.indexOf(door) > -1 ? 'true' : 'false');
+          b.addEventListener('click', function () {
+            var list = state.d[d.id].doors;
+            var at = list.indexOf(door);
+            if (at > -1) list.splice(at, 1); else list.push(door);
+            b.setAttribute('aria-pressed', at > -1 ? 'false' : 'true');
+            changed();
+          });
+          chips.appendChild(b);
+        });
+        f.appendChild(chips);
+      }
+      var ta = document.createElement('textarea');
+      ta.id = id;
+      ta.rows = 2;
+      ta.placeholder = 'e.g. ' + d.ex[i];
+      ta.value = state.d[d.id][r.key];
+      ta.addEventListener('input', function () { state.d[d.id][r.key] = ta.value; changed(); });
+      f.appendChild(ta);
+      card.appendChild(f);
+    });
+    host.appendChild(card);
+  });
+
+  var move = document.getElementById('move');
+  move.value = state.move;
+  move.addEventListener('input', function () { state.move = move.value; changed(); });
+
+  function filled(d) {
+    var v = state.d[d.id];
+    return {
+      exp: !!v.exp.trim(),
+      own: !!v.own.trim(),
+      how: !!v.how.trim() || v.doors.length > 0
+    };
+  }
+
+  function render() {
+    var n = 0;
+    DECADES.forEach(function (d) { var f = filled(d); n += (f.exp ? 1 : 0) + (f.own ? 1 : 0) + (f.how ? 1 : 0); });
+    if (state.move.trim()) n += 1;
+    document.getElementById('count').textContent = n + ' of 13 filled';
+    document.getElementById('meter').style.width = Math.round(n / 13 * 100) + '%';
+
+    // Gaps
+    var gaps = [];
+    DECADES.forEach(function (d) {
+      var f = filled(d);
+      if (f.own && !f.how) gaps.push('Your ' + d.name + ': you want to own something, but nothing says how you get there yet.');
+      if (f.exp && !f.own && !f.how) gaps.push('Your ' + d.name + ': there’s something to experience, but nothing to own or build toward it.');
+    });
+    var anyOwn = DECADES.some(function (d) { return filled(d).own; });
+    var g = document.getElementById('gaps');
+    g.innerHTML = '';
+    var h3 = document.createElement('h3');
+    if (n === 0) {
+      h3.textContent = 'Fill in a few boxes and this updates.';
+      var p0 = document.createElement('p');
+      p0.textContent = 'It looks for decades where you want to own something but haven’t named the door or the access that gets you there.';
+      g.appendChild(h3); g.appendChild(p0);
+    } else if (gaps.length) {
+      h3.textContent = gaps.length === 1 ? 'One gap to look at' : gaps.length + ' gaps to look at';
+      var ul = document.createElement('ul');
+      gaps.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      g.appendChild(h3); g.appendChild(ul);
+    } else if (!anyOwn) {
+      h3.textContent = 'Nothing in the "own" row yet.';
+      var p1 = document.createElement('p');
+      p1.textContent = 'That row is the point of the exercise. A fund, a company, equity in your work, a property: pick one decade and name something.';
+      g.appendChild(h3); g.appendChild(p1);
+    } else {
+      h3.textContent = 'Every ownership goal has a way in.';
+      var p2 = document.createElement('p');
+      p2.textContent = state.move.trim() ? 'And you have a move for this year. Say it to the person next to you.' : 'Last step: write one ownership move for this year.';
+      g.appendChild(h3); g.appendChild(p2);
+    }
+
+    document.getElementById('summary').textContent = asText();
+  }
+
+  function asText() {
+    var lines = ['MY CAPITAL CALENDAR', ''];
+    DECADES.forEach(function (d) {
+      var v = state.d[d.id];
+      lines.push(d.name);
+      lines.push('  Experience: ' + (v.exp.trim() || '(blank)'));
+      lines.push('  Own: ' + (v.own.trim() || '(blank)'));
+      var how = [v.doors.join(', '), v.how.trim()].filter(Boolean).join('. ');
+      lines.push('  How I get there: ' + (how || '(blank)'));
+      lines.push('');
+    });
+    lines.push('One ownership move this year: ' + (state.move.trim() || '(blank)'));
+    lines.push('');
+    lines.push('Made with the Capital Calendar, She Has Leverage. Time buckets idea from Die with Zero by Bill Perkins.');
+    return lines.join('\n');
+  }
+
+  var status = document.getElementById('status');
+  var timer;
+  function say(t) { status.textContent = t; clearTimeout(timer); timer = setTimeout(function () { status.textContent = ''; }, 4000); }
+
+  function changed() { save(); render(); }
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var text = asText();
+    var pre = document.getElementById('summary');
+    function fallback() {
+      try {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        say('Copying is blocked here. The text below is selected: copy it with your keyboard or long-press.');
+      } catch (e) { say('Copying is blocked here. Select the text below and copy it.'); }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { say('Copied. Paste it into your notes or a text to yourself.'); }, fallback);
+      } else { fallback(); }
+    } catch (e) { fallback(); }
+  });
+
+  var confirmBox = document.getElementById('confirm');
+  document.getElementById('reset').addEventListener('click', function () { confirmBox.hidden = false; document.getElementById('confirm-no').focus(); });
+  document.getElementById('confirm-no').addEventListener('click', function () { confirmBox.hidden = true; });
+  document.getElementById('confirm-yes').addEventListener('click', function () {
+    state = blank();
+    document.querySelectorAll('textarea').forEach(function (t) { t.value = ''; });
+    document.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    confirmBox.hidden = true;
+    changed();
+    say('Cleared.');
+  });
+
+  render();
+})();
+</script>
